@@ -13,8 +13,8 @@
     "tdd",
     "bdd",
     "specbyexample",
-	"junit-xml",
-	"junit"
+    "junit-xml",
+    "junit"
   ],
   "bugs": {
     "url": "https://github.com/daspec/daspec-js-junit-xml-formatter/issues"
@@ -23,5 +23,18 @@
   "files": [
     "src"
   ],
-  "main": "./src/junit-xml-formatter.js"
+  "scripts": {
+    "pretest": "jshint src spec",
+    "test": "node spec/support/jasmine-runner.js"
+  },
+  "main": "./src/junit-xml-formatter.js",
+  "devDependencies": {
+    "daspec-core": "0.0.7",
+    "jasmine": "^2.3.2",
+    "jasmine-spec-reporter": "^2.4.0",
+    "jshint": "^2.8.0"
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1"
+  }
 }
