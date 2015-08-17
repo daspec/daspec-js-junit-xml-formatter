@@ -1,0 +1,27 @@
+{
+  "name": "daspec-junit-xml-formatter",
+  "version": "0.0.1",
+  "description": "Junit XML result formatter for DaSpec",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/daspec/daspec-js-junit-xml-formatter"
+  },
+  "keywords": [
+    "daspec",
+    "test",
+    "tdd",
+    "bdd",
+    "specbyexample",
+	"junit-xml",
+	"junit"
+  ],
+  "bugs": {
+    "url": "https://github.com/daspec/daspec-js-junit-xml-formatter/issues"
+  },
+  "homepage": "http://daspec.com",
+  "files": [
+    "src"
+  ],
+  "main": "./src/junit-xml-formatter.js"
+}
