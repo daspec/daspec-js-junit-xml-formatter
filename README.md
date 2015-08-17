@@ -10,7 +10,7 @@ Then install the JUnit XML reporter
     
     npm install daspec-junit-xml-formatter
 
-Add the `daspec-junit-xml-formatter` to the formatters when you run daspec from the command line
+Add the `daspec-junit-xml-formatter` to the formatters when you run `daspec` from the command line
 
     daspec --specs ... --steps ... --formatters daspec-junit-xml-formatter
 
