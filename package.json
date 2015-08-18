@@ -29,7 +29,7 @@
   },
   "main": "./src/junit-xml-formatter.js",
   "devDependencies": {
-    "daspec-core": "0.0.7",
+    "daspec-core": ">=0.0.7",
     "jasmine": "^2.3.2",
     "jasmine-spec-reporter": "^2.4.0",
     "jshint": "^2.8.0",
