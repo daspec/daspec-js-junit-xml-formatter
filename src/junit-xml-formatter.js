@@ -4,7 +4,8 @@ var path = require('path'),
 	mkdirp = require('mkdirp');
 module.exports = function junitXmlFormatter(runner, config) {
 	'use strict';
-	var lines = [],
+	var ERROR = 'error', FAILED = 'failed', SKIPPED = 'skipped', PASSED = 'passed',
+		lines = [],
 		fileName,
 		executedSpecs = 0,
 		failedSpecs = 0,
@@ -41,18 +42,33 @@ module.exports = function junitXmlFormatter(runner, config) {
 				return 'daspec';
 			}
 			return path.dirname(filePath).replace(path.sep, '.');
+		},
+		specStatus = function (counts) {
+			if (counts.error) {
+				return ERROR;
+			} else if (counts.failed > 0) {
+				return FAILED;
+			} else if (counts.skipped > 0 || !counts.executed) {
+				return SKIPPED;
+			} else {
+				return PASSED;
+			}
 		};
 	parseConfig();
 	runner.addEventListener('specEnded',  function (name, counts) {
 		executedSpecs++;
-		if (counts.error) {
-			errorSpecs++;
-		} else if (counts.failed > 0) {
-			failedSpecs++;
-		} else if (counts.skipped > 0 || !counts.executed) {
-			skippedSpecs++;
-		}
+		var summary = specStatus(counts);
 		lines.push('<testcase name="' + testName(name) + '" classname="' + className(name) + '">');
+		if (summary === ERROR) {
+			errorSpecs++;
+			lines.push('<error/>');
+		} else if (summary === FAILED) {
+			failedSpecs++;
+			lines.push('<failure/>');
+		} else if (summary === SKIPPED) {
+			skippedSpecs++;
+			lines.push('<skipped/>');
+		}
 		lines.push('</testcase>');
 	});
 	runner.addEventListener('suiteEnded', function () {

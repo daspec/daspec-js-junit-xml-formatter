@@ -180,7 +180,7 @@ describe('Junit XML Formatter', function () {
 					checkName('folder/subfolder/specname', 'specname', 'folder.subfolder');
 				});
 				it('survives names with quotes (xml escaping test)', function () {
-					checkName('fo"lder/subfold"er/sp"ecname', 'specname', 'folder.subfolder');
+					checkName('fo"lder/subfold"er/sp"ecn"ame', 'specname', 'folder.subfolder');
 				});
 				it('uses daspec as the classname if no folders provided', function () {
 					checkName('specname.md', 'specname', 'daspec');
@@ -203,6 +203,54 @@ describe('Junit XML Formatter', function () {
 				it('uses the extension as the test name if using files without names -- hopefully nobody is that stupid, but...', function () {
 					checkName('folder/.md', '.md', 'folder');
 				});
+			});
+			describe('contents', function () {
+				it('adds a skipped sub-element for skipped specs', function () {
+					runner.dispatchEvent('specEnded', 'specname', {executed: 0});
+					runner.dispatchEvent('suiteEnded');
+					var xmlRoot = readContents(),
+						specElement = xmlRoot.find('testcase')[0];
+					expect(specElement.find('skipped').length).toBe(1);
+					expect(specElement.find('error').length).toBe(0);
+					expect(specElement.find('failure').length).toBe(0);
+				});
+				it('adds an error sub-element for specs with errors', function () {
+					runner.dispatchEvent('specEnded', 'specname', {passed: 3, executed: 4, failed: 0, error: 1});
+					runner.dispatchEvent('suiteEnded');
+					var xmlRoot = readContents(),
+						specElement = xmlRoot.find('testcase')[0];
+					expect(specElement.find('skipped').length).toBe(0);
+					expect(specElement.find('error').length).toBe(1);
+					expect(specElement.find('failure').length).toBe(0);
+				});
+				it('adds a failure sub-element for specs with failures', function () {
+					runner.dispatchEvent('specEnded', 'specname', {passed: 3, executed: 4, failed: 1});
+					runner.dispatchEvent('suiteEnded');
+					var xmlRoot = readContents(),
+						specElement = xmlRoot.find('testcase')[0];
+					expect(specElement.find('skipped').length).toBe(0);
+					expect(specElement.find('error').length).toBe(0);
+					expect(specElement.find('failure').length).toBe(1);
+				});
+				it('does not add subelements for passed tests', function () {
+					runner.dispatchEvent('specEnded', 'specname', {passed: 3, executed: 3});
+					runner.dispatchEvent('suiteEnded');
+					var xmlRoot = readContents(),
+						specElement = xmlRoot.find('testcase')[0];
+					expect(specElement.find('skipped').length).toBe(0);
+					expect(specElement.find('error').length).toBe(0);
+					expect(specElement.find('failure').length).toBe(0);
+				});
+			});
+			it('appends elements for each spec', function () {
+				runner.dispatchEvent('specEnded', 'folder1/specname1', {passed: 3, executed: 3});
+				runner.dispatchEvent('specEnded', 'folder2/specname2', {passed: 3, executed: 2, failed: 1});
+				runner.dispatchEvent('suiteEnded');
+				var xmlRoot = readContents(),
+					firstSpec = xmlRoot.find('testcase')[0],
+					secondSpec = xmlRoot.find('testcase')[1];
+				expect(firstSpec.attr('name').value()).toEqual('specname1');
+				expect(secondSpec.attr('name').value()).toEqual('specname2');
 			});
 		});
 
