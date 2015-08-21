@@ -1,6 +1,6 @@
 {
   "name": "daspec-junit-xml-formatter",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Junit XML result formatter for DaSpec",
   "license": "MIT",
   "repository": {
